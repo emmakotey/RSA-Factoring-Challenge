@@ -1,49 +1,21 @@
-#!/usr/bin/env bash
-# is a factors challenge
+#/usr/bin/env python3
+import sys
 
-check_factor()
-{
-	if [ $# -ne 3 ];
-        then
-                args=("$@")
-                count=0
-                num2=1
-                for a in ${args[*]};
-                do
-                        if [ $count -gt 1 ];
-                        then
-                                num2=$(echo $a*$num2 | bc)
-                        fi
-                        count=$((count + 1))
-                done
-        else
-                num2=$3
-        fi
 
-        num1=$2
-        num=$(echo "$1" | tr ':' '=')
+def primef(n):
+    if n <= 3:
+        return int(n)
+    if n % 2 == 0:
+        return 2
+    elif n % 3 == 0:
+        return 3
+    else:
+        for i in range(5, int((n)**0.5) + 1, 6):
+            if n % i == 0:
+                return int(i)
+            if n % (i + 2) == 0:
+                return primef(n/(i+2))
+    return int(n)
 
-        result=$(echo "if($num2 > $num1) 1 else 0" | bc)
-	        if ((result == 1)); then
-		        numcp=$num1
-		        num1=$num2
-		        num2=$numcp
-                fi
 
-        echo "$num$num1*$num2"
-}
-
-if [ $# -ne 1 ]
-then
-        echo 'Usage: factors <file>'
-        exit 1
-else
-
-        while read i
-        do
-
-                result=$(factor "$i")
-                check_factor $result
-
-        done < "$1"
-fi
+print(primef(int(sys.argv[1])))
